@@ -3,6 +3,21 @@
     "license": "proprietary",
     "minimum-stability": "stable",
     "prefer-stable": true,
+    "scripts": {
+        "fix-style": "vendor/bin/php-cs-fixer fix --allow-risky=yes",
+        "check-style": "vendor/bin/php-cs-fixer fix --allow-risky=yes --dry-run",
+        "auto-scripts": {
+            "cache:clear": "symfony-cmd",
+            "assets:install %PUBLIC_DIR%": "symfony-cmd",
+            "importmap:install": "symfony-cmd"
+        },
+        "post-install-cmd": [
+            "@auto-scripts"
+        ],
+        "post-update-cmd": [
+            "@auto-scripts"
+        ]
+    },
     "require": {
         "php": ">=8.2",
         "ext-ctype": "*",
@@ -74,19 +89,6 @@
         "symfony/polyfill-php81": "*",
         "symfony/polyfill-php82": "*"
     },
-    "scripts": {
-        "auto-scripts": {
-            "cache:clear": "symfony-cmd",
-            "assets:install %PUBLIC_DIR%": "symfony-cmd",
-            "importmap:install": "symfony-cmd"
-        },
-        "post-install-cmd": [
-            "@auto-scripts"
-        ],
-        "post-update-cmd": [
-            "@auto-scripts"
-        ]
-    },
     "conflict": {
         "symfony/symfony": "*"
     },
@@ -97,6 +99,7 @@
         }
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.65",
         "phpunit/phpunit": "^9.5",
         "symfony/browser-kit": "7.2.*",
         "symfony/css-selector": "7.2.*",
