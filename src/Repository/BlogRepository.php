@@ -42,6 +42,6 @@ class BlogRepository extends ServiceEntityRepository
                 ->setParameter('title', '%' . $blogFilter->getTitle() . '%');
         }
 
-        return $blogs->getQuery()->getResult();
+        return $blogs;
     }
 }
