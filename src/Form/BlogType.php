@@ -14,11 +14,13 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class BlogType extends AbstractType
 {
     public function __construct(
         private readonly TagTransformer $tagTransformer,
+        private readonly Security       $security,
     )
     {
     }
@@ -38,23 +40,37 @@ class BlogType extends AbstractType
             ])
             ->add('text', TextareaType::class, [
                 'required' => true,
-            ])
-            ->add('category', EntityType::class, [
+            ]);
+
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            $builder->add('category', EntityType::class, [
                 'class' => Category::class,
                 'query_builder' => function ($repository) {
                     return $repository->createQueryBuilder('p')->orderBy('p.name', 'ASC');
                 },
                 'required' => false,
-                'empty_data' => null,
+                'empty_data' => '',
 //                'choice_label' => 'name',
-                'placeholder' => '--категории--',
+                'placeholder' => '-- выбор категории --',
             ])
-            ->add('tags', TextType::class, [
-                'label' => 'Теги',
-                'required' => false,
-            ])
-            ->get('tags')
-            ->addModelTransformer($this->tagTransformer);;
+                ->add('user', EntityType::class, [
+                    'class' => User::class,
+                    'query_builder' => function ($repository) {
+                        return $repository->createQueryBuilder('p')->orderBy('p.id', 'ASC');
+                    },
+                    'required' => false,
+                    'empty_data' => '',
+                    'choice_label' => 'emailFormatted',
+                    'placeholder' => '-- выбор пользователя --',
+                ]);
+        }
+
+        $builder->add('tags', TextType::class, array(
+            'label' => 'Теги',
+            'required' => false,
+        ));
+
+        $builder->get('tags')->addModelTransformer($this->tagTransformer);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -48,6 +48,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->email;
     }
 
+    public function getEmailFormatted(): ?string
+    {
+        return ' Владелец: ' . $this->email;
+    }
+
+
     public function setEmail(string $email): static
     {
         $this->email = $email;
