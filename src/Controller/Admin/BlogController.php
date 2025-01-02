@@ -30,7 +30,7 @@ final class BlogController extends AbstractController
         $pagination = $paginator->paginate(
             $blogRepository->findByBlogFilter($blogFilter),
             $request->query->getInt('offset', 1),
-            3
+            10
         );
 
         return $this->render('blog/index.html.twig', [

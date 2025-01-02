@@ -42,7 +42,10 @@ class Blog
     #[ORM\ManyToMany(targetEntity: 'App\Entity\Tag', cascade: ['persist'])]
     private ArrayCollection|PersistentCollection $tags;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    // fetch: 'EAGER' Doctrine автоматически загружает связанные сущности вместе с основной сущностью.
+    // Это означает, что при выполнении запроса к основной сущности все связанные сущности будут загружены сразу,
+    // а не по мере необходимости.
+    #[ORM\ManyToOne(targetEntity: User::class, fetch: 'EAGER')]
     #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: true)]
     private ?User $user = null;
 
