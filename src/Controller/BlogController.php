@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\ContentWatchApi;
 
 #[Route('/user/blog')]
 final class BlogController extends AbstractController
@@ -42,7 +43,7 @@ final class BlogController extends AbstractController
     }
 
     #[Route('/new', name: 'app_user_blog_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager,  ContentWatchApi $contentWatchApi): Response
     {
         $blog = new Blog($this->getUser());
         $form = $this->createForm(BlogType::class, $blog);
@@ -51,6 +52,12 @@ final class BlogController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($blog);
             $entityManager->flush();
+
+            $blog->setPercent(
+                $contentWatchApi->checkText($blog->getText())
+            );
+            $entityManager->flush();
+
 
             return $this->redirectToRoute('app_user_blog_index', [], Response::HTTP_SEE_OTHER);
         }

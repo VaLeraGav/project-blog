@@ -49,6 +49,9 @@ class Blog
     #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: true)]
     private ?User $user = null;
 
+    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+    private ?int $percent = null;
+
     public function __construct(UserInterface|User $user)
     {
         $this->user = $user;
@@ -136,5 +139,16 @@ class Blog
         return $this;
     }
 
+    public function getPercent(): ?int
+    {
+        return $this->percent;
+    }
+
+    public function setPercent(?int $percent): static
+    {
+        $this->percent = $percent;
+
+        return $this;
+    }
 
 }
