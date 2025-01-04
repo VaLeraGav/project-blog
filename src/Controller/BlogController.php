@@ -73,6 +73,11 @@ final class BlogController extends AbstractController
             return $this->redirectToRoute('app_user_blog_index', [], Response::HTTP_SEE_OTHER);
         }
 
+        //  $this->addFlash(
+        //       'notice',
+        //       'Your changes were saved!'
+        //   );
+
         return $this->render('blog/new.html.twig', [
             'blog' => $blog,
             'form' => $form,
