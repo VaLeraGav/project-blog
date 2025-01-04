@@ -8,12 +8,15 @@ use App\Entity\Blog;
 use App\Filter\BlogFilter;
 use App\Form\BlogFilterType;
 use App\Form\BlogType;
+use App\Message\ContentWatchJob;
 use App\Repository\BlogRepository;
 use App\Service\ContentWatchApi;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\Exception\ExceptionInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Knp\Component\Pager\PaginatorInterface;
 
@@ -40,8 +43,15 @@ final class BlogController extends AbstractController
         ]);
     }
 
+    /**
+     * @throws ExceptionInterface
+     */
     #[Route('/new', name: 'app_blog_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, ContentWatchApi $contentWatchApi): Response
+    public function new(
+        Request                $request,
+        EntityManagerInterface $entityManager,
+        MessageBusInterface    $bus,
+    ): Response
     {
         $blog = new Blog($this->getUser());
         $form = $this->createForm(BlogType::class, $blog);
@@ -51,11 +61,15 @@ final class BlogController extends AbstractController
             $entityManager->persist($blog);
             $entityManager->flush();
 
-            $blog->setPercent(
-                $contentWatchApi->checkText($blog->getText())
-            );
-            $entityManager->flush();
+            //  $blog->setPercent(
+            //      $contentWatchApi->checkText($blog->getText())
+            //  );
+            //  $entityManager->flush();
 
+            try {
+                $bus->dispatch(new ContentWatchJob($blog->getId()));
+            } catch (ExceptionInterface $e) {
+            }
 
             return $this->redirectToRoute('app_blog_index', [], Response::HTTP_SEE_OTHER);
         }

@@ -15,9 +15,12 @@ use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\Exception\ExceptionInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Service\ContentWatchApi;
+use Symfony\Component\Messenger\MessageBusInterface;
+use App\Message\ContentWatchJob;
 
 #[Route('/user/blog')]
 final class BlogController extends AbstractController
@@ -42,8 +45,15 @@ final class BlogController extends AbstractController
         ]);
     }
 
+    /**
+     * @throws ExceptionInterface
+     */
     #[Route('/new', name: 'app_user_blog_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager,  ContentWatchApi $contentWatchApi): Response
+    public function new(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        MessageBusInterface $bus,
+    ): Response
     {
         $blog = new Blog($this->getUser());
         $form = $this->createForm(BlogType::class, $blog);
@@ -53,11 +63,12 @@ final class BlogController extends AbstractController
             $entityManager->persist($blog);
             $entityManager->flush();
 
-            $blog->setPercent(
-                $contentWatchApi->checkText($blog->getText())
-            );
-            $entityManager->flush();
+            //  $blog->setPercent(
+            //      $contentWatchApi->checkText($blog->getText())
+            //  );
+            //  $entityManager->flush();
 
+            $bus->dispatch(new ContentWatchJob($blog->getId()));
 
             return $this->redirectToRoute('app_user_blog_index', [], Response::HTTP_SEE_OTHER);
         }
