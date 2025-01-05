@@ -40,7 +40,7 @@ final class CategoryController extends AbstractController
 
         return $this->render('category/new.html.twig', [
             'category' => $category,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -66,7 +66,7 @@ final class CategoryController extends AbstractController
 
         return $this->render('category/edit.html.twig', [
             'category' => $category,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
