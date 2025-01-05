@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Web\Controller;
+namespace Tests\Web\Controller;
 
 // use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use App\Factory\BlogFactory;
 use App\Factory\UserFactory;
-use App\Tests\Helpers\WebTestCaseUnit;
+use Tests\Helpers\WebTestCaseUnit;
 
 class DefaultControllerTest extends WebTestCaseUnit
 {

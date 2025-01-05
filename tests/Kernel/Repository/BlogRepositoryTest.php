@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Kernel\Repository;
+namespace Tests\Kernel\Repository;
 
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use App\Factory\UserFactory;
