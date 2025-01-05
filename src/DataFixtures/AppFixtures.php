@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DataFixtures;
 
 use App\Entity\Blog;
@@ -47,7 +49,6 @@ class AppFixtures extends Fixture
                 $manager->persist($blog);
             }
         }
-
 
         $manager->flush();
     }

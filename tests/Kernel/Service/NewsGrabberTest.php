@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Kernel\Service;
 
 use App\Factory\UserFactory;
@@ -61,7 +63,7 @@ final class NewsGrabberTest extends KernelTestCase
         $httpClient
             ->method('get')
             ->willReturnCallback(function ($url) {
-                if ($url == 'https://www.engadget.com/news/') {
+                if ('https://www.engadget.com/news/' == $url) {
                     return file_get_contents('tests/DataProvider/index.html');
                 } else {
                     static $index = 0;

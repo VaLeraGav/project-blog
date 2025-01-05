@@ -9,21 +9,20 @@ use App\Entity\Category;
 use App\Entity\User;
 use App\Form\DataTransformer\TagTransformer;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class BlogType extends AbstractType
 {
     public function __construct(
         private readonly TagTransformer $tagTransformer,
-        private readonly Security       $security,
-    )
-    {
+        private readonly Security $security,
+    ) {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -33,8 +32,8 @@ class BlogType extends AbstractType
                 'required' => true,
                 'help' => 'Заполните заголовок текста',
                 'attr' => [
-                    'class' => 'myclass'
-                ]
+                    'class' => 'myclass',
+                ],
             ])
             ->add('description', TextareaType::class, [
                 'required' => true,
@@ -51,7 +50,7 @@ class BlogType extends AbstractType
                 },
                 'required' => false,
                 'empty_data' => '',
-//                'choice_label' => 'name',
+                // 'choice_label' => 'name',
                 'placeholder' => '-- выбор категории --',
             ])
                 ->add('user', EntityType::class, [
@@ -72,22 +71,22 @@ class BlogType extends AbstractType
                 ]);
         }
 
-        $builder->add('tags', TextType::class, array(
+        $builder->add('tags', TextType::class, [
             'label' => 'Теги',
             'required' => false,
-        ));
+        ]);
 
         $builder->get('tags')->addModelTransformer($this->tagTransformer);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => Blog::class,
             'csrf_protection' => false,
             'csrf_field_name' => '_token',
-//             a unique key to help generate the secret token
+            //             a unique key to help generate the secret token
             'intention' => 'task_item',
-        ));
+        ]);
     }
 }

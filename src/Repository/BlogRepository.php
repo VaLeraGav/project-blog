@@ -6,10 +6,9 @@ namespace App\Repository;
 
 use App\Entity\Blog;
 use App\Filter\BlogFilter;
-use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 
 class BlogRepository extends ServiceEntityRepository
 {
@@ -35,7 +34,7 @@ class BlogRepository extends ServiceEntityRepository
     {
         return $this->findOneBy(['title' => $title]);
     }
-    
+
     public function findByBlogFilter(BlogFilter $blogFilter): QueryBuilder
     {
         $blogs = $this->createQueryBuilder('b')

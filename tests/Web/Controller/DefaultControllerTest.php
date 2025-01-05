@@ -25,4 +25,3 @@ class DefaultControllerTest extends WebTestCaseUnit
         $this->assertCount(6, $crawler->filter('div.row > div'));
     }
 }
-

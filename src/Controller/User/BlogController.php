@@ -1,6 +1,5 @@
 <?php
 
-
 declare(strict_types=1);
 
 namespace App\Controller\User;
@@ -52,8 +51,7 @@ final class BlogController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager,
         MessageBusInterface $bus,
-    ): Response
-    {
+    ): Response {
         $blog = new Blog($this->getUser());
         $form = $this->createForm(BlogType::class, $blog);
         $form->handleRequest($request);
@@ -90,7 +88,6 @@ final class BlogController extends AbstractController
             'blog' => $blog,
         ]);
     }
-
 
     #[IsGranted('edit', 'blog', 'Blog not found', 404)]
     #[Route('/{id}/edit', name: 'app_user_blog_edit', methods: ['GET', 'POST'])]

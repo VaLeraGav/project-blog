@@ -72,7 +72,7 @@ class Blog
     #[ORM\PreUpdate]
     public function setBlockedAtValue(): void
     {
-        if ($this->status == 'blocked' && !$this->blockedAt) {
+        if ('blocked' == $this->status && !$this->blockedAt) {
             $this->blockedAt = new DateTime();
         }
     }
@@ -194,5 +194,4 @@ class Blog
 
         return $this;
     }
-
 }

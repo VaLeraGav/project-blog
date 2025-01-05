@@ -10,15 +10,14 @@ use App\Form\BlogFilterType;
 use App\Form\BlogType;
 use App\Message\ContentWatchJob;
 use App\Repository\BlogRepository;
-use App\Service\ContentWatchApi;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\Exception\ExceptionInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
-use Knp\Component\Pager\PaginatorInterface;
 
 #[Route('/admin/blog')]
 final class BlogController extends AbstractController
@@ -48,11 +47,10 @@ final class BlogController extends AbstractController
      */
     #[Route('/new', name: 'app_blog_new', methods: ['GET', 'POST'])]
     public function new(
-        Request                $request,
+        Request $request,
         EntityManagerInterface $entityManager,
-        MessageBusInterface    $bus,
-    ): Response
-    {
+        MessageBusInterface $bus,
+    ): Response {
         $blog = new Blog($this->getUser());
         $form = $this->createForm(BlogType::class, $blog);
         $form->handleRequest($request);

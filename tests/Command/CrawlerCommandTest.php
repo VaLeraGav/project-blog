@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Tests\Kernel\Command;
 
 use App\Service\NewsGrabber;

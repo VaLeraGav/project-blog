@@ -45,6 +45,6 @@ class Category
 
     public function fullName(): string
     {
-        return $this->name.' полное имя категории';
+        return $this->name . ' полное имя категории';
     }
 }

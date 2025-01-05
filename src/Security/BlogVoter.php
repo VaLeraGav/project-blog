@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Security;
 
 use App\Entity\Blog;
@@ -10,8 +13,8 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class BlogVoter extends Voter
 {
-    const VIEW = 'view';
-    const EDIT = 'edit';
+    public const VIEW = 'view';
+    public const EDIT = 'edit';
 
     public function __construct(private Security $security)
     {

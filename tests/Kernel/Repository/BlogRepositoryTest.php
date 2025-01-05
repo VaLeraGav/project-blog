@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Kernel\Repository;
 
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use App\Factory\UserFactory;
 use App\Factory\BlogFactory;
+use App\Factory\UserFactory;
 use App\Repository\BlogRepository;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 

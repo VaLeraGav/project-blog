@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Service;
+declare(strict_types=1);
 
+namespace App\Service;
 
 use App\Entity\Blog;
 use App\Repository\BlogRepository;
@@ -31,11 +32,6 @@ class NewsGrabber
         return $this;
     }
 
-    /**
-     * @param int|null $count
-     * @param bool $dryRun
-     * @return void
-     */
     public function importNews(?int $count = null, bool $dryRun = false): void
     {
         $this->logger->notice('Start getting news');

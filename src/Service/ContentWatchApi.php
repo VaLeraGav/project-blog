@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 class ContentWatchApi
@@ -8,8 +10,7 @@ class ContentWatchApi
 
     public function __construct(
         private readonly string $key
-    )
-    {
+    ) {
     }
 
     public function checkText(string $text): ?int
@@ -17,10 +18,13 @@ class ContentWatchApi
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, [
+        curl_setopt(
+            $curl,
+            CURLOPT_POSTFIELDS,
+            [
                 'key' => $this->key,
                 'text' => $text,
-                'test' => 0
+                'test' => 0,
             ]
         );
         curl_setopt($curl, CURLOPT_URL, self::API_URL);

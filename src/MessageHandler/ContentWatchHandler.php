@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\MessageHandler;
 
 use App\Message\ContentWatchJob;
@@ -14,8 +17,7 @@ class ContentWatchHandler
         private readonly ContentWatchApi $contentWatchApi,
         private readonly EntityManagerInterface $em,
         private readonly BlogRepository $blogRepository,
-    )
-    {
+    ) {
     }
 
     public function __invoke(ContentWatchJob $contentWatchJob): void
