@@ -7,6 +7,7 @@ namespace App\Entity;
 use App\Repository\BlogRepository;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
@@ -64,9 +65,24 @@ class Blog
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?DateTime $blockedAt;
 
+    /**
+     * @var Collection<int, Comment>
+     */
+    #[Ignore]
+    #[ORM\OneToMany(
+        targetEntity: Comment::class,
+        mappedBy: 'blog',
+        cascade: ['persist', 'remove'],
+        // orphanRemoval: true
+    )]
+    #[ORM\OrderBy(['id' => 'DESC'])]
+    private Collection $comments;
+
     public function __construct(UserInterface|User $user)
     {
+        $this->status = 'pending';;
         $this->user = $user;
+        $this->comments = new ArrayCollection();
     }
 
     #[ORM\PreUpdate]
@@ -191,6 +207,36 @@ class Blog
     public function setStatus(?string $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): static
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setBlog($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): static
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getBlog() === $this) {
+                $comment->setBlog(null);
+            }
+        }
 
         return $this;
     }
