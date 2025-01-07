@@ -23,7 +23,7 @@ class BlogRepositoryTest extends KernelTestCase
         $user = UserFactory::createOne();
 
         BlogFactory::createOne(['user' => $user, 'title' => 'blog title']);
-        BlogFactory::createMany(7, ['user' => $user]);
+        BlogFactory::createMany(5, ['user' => $user]);
 
         $blogRepository = static::getContainer()->get(BlogRepository::class);
 
@@ -31,6 +31,6 @@ class BlogRepositoryTest extends KernelTestCase
 
         $this->assertCount(6, $blogs);
 
-        $this->assertSame('blog title', $blogs[0]->getTitle());
+        $this->assertSame('blog title', $blogs[5]->getTitle());
     }
 }
