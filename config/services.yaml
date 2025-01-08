@@ -30,6 +30,7 @@ services:
         tags: ['serializer.normalizer']
         arguments:
             $defaultContext:
+                # защита от рекурсивного сериализации двустороней связи у Entity
                 circular_reference_handler: '@App\Serializer\CircularReferenceHandler'
                 #  игнорирование для всех сущностей
                 ignored_attributes: ['createdAt', 'updatedAt']
