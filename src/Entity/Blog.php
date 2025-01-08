@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Dto\BlogDto;
 use App\Repository\BlogRepository;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -13,6 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Ignore;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BlogRepository::class)]
@@ -21,6 +24,7 @@ class Blog
 {
     use TimestampableEntity;
 
+    #[Groups(['select_box'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -30,10 +34,12 @@ class Blog
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
+    #[Groups(['select_box'])]
     #[Assert\NotBlank]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $text = null;
 
+    #[Groups(['select_box'])]
     #[Assert\NotBlank]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
@@ -42,6 +48,7 @@ class Blog
     #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'id', nullable: true)]
     private ?Category $category = null;
 
+    #[Groups(['select_box'])]
     #[ORM\JoinTable(name: 'tags_to_blog')]
     #[ORM\JoinColumn(name: 'blog_id', referencedColumnName: 'id')]
     #[ORM\InverseJoinColumn(name: 'tag_id', referencedColumnName: 'id', unique: true)]
@@ -53,12 +60,13 @@ class Blog
     // а не по мере необходимости.
     #[ORM\ManyToOne(targetEntity: User::class, fetch: 'EAGER')]
     #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: true)]
+    // Для того чтобы скрыть поле в api
+    #[Ignore]
     private ?User $user = null;
 
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $percent = null;
 
-    #[Assert\NotBlank]
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $status = null;
 
@@ -80,9 +88,21 @@ class Blog
 
     public function __construct(UserInterface|User $user)
     {
-        $this->status = 'pending';;
+        $this->status = 'pending';
         $this->user = $user;
         $this->comments = new ArrayCollection();
+    }
+
+    public static function createFromDto(UserInterface|User $user, BlogDto $blogDto): Blog
+    {
+        $blog = new self($user);
+
+        $blog
+            ->setTitle($blogDto->title)
+            ->setDescription($blogDto->description)
+            ->setText($blogDto->text);
+
+        return $blog;
     }
 
     #[ORM\PreUpdate]
@@ -239,5 +259,11 @@ class Blog
         }
 
         return $this;
+    }
+
+    #[Ignore]
+    public function getUserId()
+    {
+        return $this->user->getId();
     }
 }

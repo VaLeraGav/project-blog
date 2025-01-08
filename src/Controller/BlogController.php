@@ -17,9 +17,11 @@ class BlogController extends AbstractController
     #[Route('/blog/{id}', name: 'blog_view')]
     public function index(Blog $blog): Response
     {
-        $form = $this->createForm(CommentType::class,null,
+        $form = $this->createForm(
+            CommentType::class,
+            null,
             [
-                'action' => $this->generateUrl('blog_add_comment', ['blog' => $blog->getId()])
+                'action' => $this->generateUrl('blog_add_comment', ['blog' => $blog->getId()]),
             ]
         );
 
