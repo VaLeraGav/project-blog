@@ -1,6 +1,7 @@
 monolog:
     channels:
         - deprecation # Deprecations are logged in the dedicated "deprecation" channel when it exists
+        - parser
 
 when@dev:
     monolog:
@@ -18,6 +19,12 @@ when@dev:
             #chromephp:
             #    type: chromephp
             #    level: info
+
+            parser:
+                type: stream
+                path: "%kernel.logs_dir%/parser-%kernel.environment%.log"
+                level: debug
+                channels: [ "parser" ]
             console:
                 type: console
                 process_psr_3_messages: false

@@ -8,10 +8,13 @@ use App\Entity\Blog;
 use App\Repository\BlogRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Monolog\Attribute\WithMonologChannel;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Contracts\Service\Attribute\Required;
 
+#[WithMonologChannel('parser')]
 class NewsGrabber
 {
     private LoggerInterface $logger;
@@ -25,6 +28,7 @@ class NewsGrabber
     ) {
     }
 
+    #[Required]
     public function setLogger(LoggerInterface $logger): self
     {
         $this->logger = $logger;
@@ -34,7 +38,7 @@ class NewsGrabber
 
     public function importNews(?int $count = null, bool $dryRun = false): void
     {
-        $this->logger->notice('Start getting news');
+        $this->logger->notice('Start getting news', ['count' => $count]);
 
         $texts = [];
         $crawler = new Crawler($this->httpClient->get('https://www.engadget.com/news/'));
@@ -89,8 +93,7 @@ class NewsGrabber
                 ->setTitle($text['title'])
                 ->setDescription(mb_substr($text['text'], 0, 200))
                 ->setText($text['text'])
-                ->setStatus('pending')
-            ;
+                ->setStatus('pending');
             $this->em->persist($blog);
         }
 

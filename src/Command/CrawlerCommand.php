@@ -42,12 +42,15 @@ class CrawlerCommand extends Command
             return Command::SUCCESS;
         }
 
-        $count = $input->getArgument('count');
+        $count = (int) $input->getArgument('count');
         $dryRun = (bool) $input->getOption('dryRun');
 
-        $logger = new ConsoleLogger($output);
+        if ($output->isVerbose()) {
+            $logger = new ConsoleLogger($output);
+            $this->newsGrabber->setLogger($logger);
+        }
 
-        $this->newsGrabber->setLogger($logger)->importNews($count, $dryRun);
+        $this->newsGrabber->importNews($count, $dryRun);
 
         $this->release();
 
