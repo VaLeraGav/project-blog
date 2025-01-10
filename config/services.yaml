@@ -5,6 +5,7 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     autoblog: 1
+    api.jwt.privateKey: '%env(file:resolve:JWT_AUTH_SECRET_KEY)%'
 
 services:
     # default configuration for services in *this* file
@@ -39,6 +40,10 @@ services:
                 callbacks: {
                     'updatedAt': '@App\Serializer\UpdatedAtCallback',
                 }
+
+    App\Security\ApiKeyAuthenticator:
+        arguments:
+            $publicKey: '%env(file:resolve:JWT_AUTH_PUBLIC_KEY)%'
 
 knp_paginator:
     page_range: 5                       # number of links shown in the pagination menu (e.g: you have 10 pages, a page_range of 3, on the 5th page you'll see links to page 4, 5, 6)
