@@ -19,9 +19,10 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
+#[Route(path: "/api", name: "api_")]
 class BlogController extends AbstractController
 {
-    #[Route('/api/blog', name: 'api_blog', methods: ['GET'], format: 'json')]
+    #[Route('/blog', name: 'blog', methods: ['GET'], format: 'json')]
     public function index(BlogRepository $blogRepository): Response
     {
         $blogs = $blogRepository->getBlogs();
@@ -32,7 +33,7 @@ class BlogController extends AbstractController
         ]);
     }
 
-    #[Route('/api/blog', name: 'api_blog_add', methods: ['POST'], format: 'json')]
+    #[Route('/blog', name: 'blog_add', methods: ['POST'], format: 'json')]
     public function add(Request $request, EntityManagerInterface $em): Response
     {
         $blog = new Blog($this->getUser());
@@ -51,7 +52,7 @@ class BlogController extends AbstractController
         }
     }
 
-    #[Route('/api/blog/id/{blog}', name: 'api_blog_update', methods: ['PUT'], format: 'json')]
+    #[Route('/blog/id/{blog}', name: 'blog_update', methods: ['PUT'], format: 'json')]
     public function update(Request $request, Blog $blog, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(BlogType::class, $blog);
@@ -68,7 +69,7 @@ class BlogController extends AbstractController
         }
     }
 
-    #[Route('/api/blog/dto', name: 'api_blog_add_dto', methods: ['POST'], format: 'json')]
+    #[Route('/blog/dto', name: 'blog_add_dto', methods: ['POST'], format: 'json')]
     public function addDto(#[MapRequestPayload(acceptFormat: 'json')] BlogDto $blogDto, EntityManagerInterface $em): Response
     {
         // tags не работает так как  DataTransformer в Form
@@ -80,7 +81,7 @@ class BlogController extends AbstractController
         return $this->json($blog);
     }
     //
-    //    #[Route('/api/blog/by_blog', name: 'api_blog_add_by_blog', methods: ['POST'], format: 'json')]
+    //    #[Route('/blog/by_blog', name: 'blog_add_by_blog', methods: ['POST'], format: 'json')]
     //    public function addByBlog(#[MapRequestPayload(acceptFormat: 'json')] Blog $blog, EntityManagerInterface $em): Response
     //    {
     //        // Этот метод контроллера не работает тк blog требует User
@@ -92,7 +93,7 @@ class BlogController extends AbstractController
     //    }
 
     // api/blog/filter?title=11
-    #[Route('/api/blog/filter', name: 'api_blog_filter', methods: ['GET'], format: 'json')]
+    #[Route('/blog/filter', name: 'blog_filter', methods: ['GET'], format: 'json')]
     public function filter(#[MapQueryString] BlogFilter $blogFilter, BlogRepository $blogRepository): Response
     {
         $blogs = $blogRepository->findByBlogFilter($blogFilter);
@@ -100,7 +101,7 @@ class BlogController extends AbstractController
         return $this->json($blogs->getQuery()->getResult());
     }
 
-    #[Route('/api/blog/id/{blog}', name: 'api_blog_delete', methods: ['DELETE'], format: 'json')]
+    #[Route('/blog/id/{blog}', name: 'blog_delete', methods: ['DELETE'], format: 'json')]
     public function delete(Blog $blog, EntityManagerInterface $em): Response
     {
         $em->remove($blog);
